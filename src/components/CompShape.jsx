@@ -142,6 +142,101 @@ export default function CompShape({ type, style, w = 44, h = 40, id, allComps = 
           <circle cx={0} cy={0} r={5} fill="#F5C542" />
         </g>
       )
+    case 'speaker':
+      return (
+        <g>
+          {/* Cabinet */}
+          <rect x={-w/2} y={-h/2} width={w} height={h} rx="3" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.1)" />
+          {/* Speaker cone — concentric circles */}
+          <circle cx={0} cy={0} r={Math.min(w,h)*0.36} stroke="#7C3AED" strokeWidth="1.5" fill="rgba(124,58,237,0.18)" />
+          <circle cx={0} cy={0} r={Math.min(w,h)*0.22} stroke="#7C3AED" strokeWidth="1.2" fill="rgba(124,58,237,0.25)" />
+          <circle cx={0} cy={0} r={Math.min(w,h)*0.1}  fill="#7C3AED" />
+          {/* Mounting screws at corners */}
+          {[[-1,-1],[1,-1],[1,1],[-1,1]].map(([sx,sy],i) => (
+            <circle key={i} cx={sx*(w/2-5)} cy={sy*(h/2-5)} r={2} stroke="#7C3AED" strokeWidth="1" fill="none" />
+          ))}
+          <text x={0} y={h/2+12} fill="#7C3AED" fontSize="7" textAnchor="middle" fontFamily="'Segoe UI',sans-serif" fontWeight="700">SPEAKER</text>
+        </g>
+      )
+    case 'controlunit': {
+      const dh = h * 0.32   // display height
+      const bw = (w - 16) / 3  // button width
+      return (
+        <g>
+          {/* Panel body */}
+          <rect x={-w/2} y={-h/2} width={w} height={h} rx="3" stroke="#0EA5E9" strokeWidth="2" fill="rgba(14,165,233,0.1)" />
+          {/* Display screen */}
+          <rect x={-w/2+5} y={-h/2+5} width={w-10} height={dh} rx="2" stroke="#0EA5E9" strokeWidth="1.2" fill="rgba(14,165,233,0.25)" />
+          {/* Screen scan lines */}
+          {[0,1,2].map(i => (
+            <line key={i} x1={-w/2+8} y1={-h/2+10+i*5} x2={w/2-8} y2={-h/2+10+i*5} stroke="#0EA5E9" strokeWidth="0.6" opacity="0.6" />
+          ))}
+          {/* Three round buttons */}
+          {[0,1,2].map(i => (
+            <circle key={i} cx={-w/2 + 8 + i*(bw+4) + bw/2} cy={h/2 - 10} r={bw*0.4} stroke="#0EA5E9" strokeWidth="1.2"
+              fill={i === 0 ? "rgba(14,165,233,0.4)" : "none"} />
+          ))}
+          {/* Rotary knob */}
+          <circle cx={w/2-9} cy={-h/2+5+dh/2} r={5} stroke="#0EA5E9" strokeWidth="1.2" fill="none" />
+          <line x1={w/2-9} y1={-h/2+5+dh/2-5} x2={w/2-9} y2={-h/2+5+dh/2-2} stroke="#0EA5E9" strokeWidth="1.2" />
+          <text x={0} y={h/2+12} fill="#0EA5E9" fontSize="7" textAnchor="middle" fontFamily="'Segoe UI',sans-serif" fontWeight="700">CTRL UNIT</text>
+        </g>
+      )
+    }
+    case 'thermometer': {
+      const tubeH = h * 0.6
+      const bulbR = Math.min(w, h) * 0.18
+      const tubeW = 5
+      const fillH = tubeH * 0.55   // mercury fill level
+      return (
+        <g>
+          {/* Outer housing/background */}
+          <rect x={-w/2} y={-h/2} width={w} height={h} rx="3" stroke="#EF4444" strokeWidth="1.5" fill="rgba(239,68,68,0.07)" />
+          {/* Tube outline */}
+          <rect x={-tubeW/2} y={-h/2+6} width={tubeW} height={tubeH} rx={tubeW/2} stroke="#EF4444" strokeWidth="1.2" fill="rgba(255,255,255,0.3)" />
+          {/* Mercury fill */}
+          <rect x={-tubeW/2+1} y={-h/2+6 + (tubeH - fillH - 1)} width={tubeW-2} height={fillH} rx={(tubeW-2)/2} fill="#EF4444" opacity="0.8" />
+          {/* Bulb */}
+          <circle cx={0} cy={-h/2+6+tubeH+bulbR*0.6} r={bulbR} stroke="#EF4444" strokeWidth="1.2" fill="rgba(239,68,68,0.5)" />
+          {/* Tick marks */}
+          {[0.2,0.4,0.6,0.8].map((t,i) => (
+            <line key={i} x1={tubeW/2+1} y1={-h/2+6 + tubeH*t} x2={tubeW/2+5} y2={-h/2+6 + tubeH*t} stroke="#EF4444" strokeWidth="0.8" />
+          ))}
+          <text x={0} y={h/2+12} fill="#EF4444" fontSize="7" textAnchor="middle" fontFamily="'Segoe UI',sans-serif" fontWeight="700">THERMO</text>
+        </g>
+      )
+    }
+    case 'timer': {
+      const r = Math.min(w,h) * 0.38
+      return (
+        <g>
+          {/* Background */}
+          <rect x={-w/2} y={-h/2} width={w} height={h} rx="3" stroke="#10B981" strokeWidth="1.5" fill="rgba(16,185,129,0.07)" />
+          {/* Clock face */}
+          <circle cx={0} cy={2} r={r} stroke="#10B981" strokeWidth="2" fill="rgba(16,185,129,0.12)" />
+          {/* Hour markers */}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map(a => {
+            const rad = (a - 90) * Math.PI / 180
+            const inner = a % 90 === 0 ? r - 5 : r - 3
+            return (
+              <line key={a}
+                x1={Math.cos(rad)*inner} y1={2+Math.sin(rad)*inner}
+                x2={Math.cos(rad)*(r-1)} y2={2+Math.sin(rad)*(r-1)}
+                stroke="#10B981" strokeWidth={a % 90 === 0 ? 1.5 : 0.8} />
+            )
+          })}
+          {/* Minute hand */}
+          <line x1={0} y1={2} x2={0} y2={2-r*0.7} stroke="#10B981" strokeWidth="1.8" strokeLinecap="round" />
+          {/* Hour hand */}
+          <line x1={0} y1={2} x2={r*0.45} y2={2+r*0.25} stroke="#10B981" strokeWidth="2.2" strokeLinecap="round" />
+          {/* Center dot */}
+          <circle cx={0} cy={2} r={2.5} fill="#10B981" />
+          {/* Crown at top */}
+          <rect x={-4} y={-h/2+1} width={8} height={4} rx="1" stroke="#10B981" strokeWidth="1" fill="rgba(16,185,129,0.3)" />
+          <text x={0} y={h/2+12} fill="#10B981" fontSize="7" textAnchor="middle" fontFamily="'Segoe UI',sans-serif" fontWeight="700">TIMER</text>
+        </g>
+      )
+    }
     default:
       return <circle r={10} fill="#ccc" />
   }
