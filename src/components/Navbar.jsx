@@ -56,7 +56,7 @@ const STEPS = [
   },
 ]
 
-export default function Navbar({ step, onStepChange, onExportIFC }) {
+export default function Navbar({ step, onStepChange, onExportSVG, onExportDXF, onExportIFC, onView3D, viewMode }) {
   return (
     <nav className="navbar" onClick={e => e.stopPropagation()}>
 <div className="nav-stepper">
@@ -107,10 +107,24 @@ export default function Navbar({ step, onStepChange, onExportIFC }) {
             <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         ) : (
-          <button className="nav-export nav-ifc" onClick={onExportIFC} title="Download IFC BIM Data">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
-            BIM (IFC)
-          </button>
+          <>
+            <button className="nav-export" onClick={onExportSVG} title="Download SVG">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+              SVG
+            </button>
+            <button className="nav-export" onClick={onExportDXF} title="Download DXF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+              DXF
+            </button>
+            <button className="nav-export nav-ifc" onClick={onExportIFC} title="Download IFC BIM Data">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+              IFC
+            </button>
+            <button className={`nav-export ${viewMode === '3d' ? 'nav-3d-active' : ''}`} onClick={onView3D} title="Toggle 3D BIM View">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5z" /><path d="M12 22V12" /><path d="M22 7l-10 5-10-5" /></svg>
+              {viewMode === '3d' ? '2D' : '3D'}
+            </button>
+          </>
         )}
       </div>
     </nav>

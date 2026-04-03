@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { generateSaunaIFC } from './exportIfc'
+import { generateSaunaDXF } from './exportDxf'
 import { uid } from './constants.jsx'
 import { getDefaultComps } from './utils/getDefaultComps'
 import { constrainComponent, checkCollision } from './utils/constraints'
@@ -7,7 +8,7 @@ import SelectionScreen from './components/SelectionScreen'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Canvas from './components/Canvas'
-
+import IFCViewer from './components/IFCViewer'
 import StatusBar from './components/StatusBar'
 import './App.css'
 
@@ -15,6 +16,8 @@ export default function App() {
   const [screen, setScreen]         = useState('selection')
   const [saunaType, setSaunaType]   = useState('barrel')
   const [step, setStep]             = useState(0)
+  const [viewMode, setViewMode]     = useState('2d') // '2d' or '3d'
+  const [ifcText, setIfcText]       = useState(null)
 
   const [projectName, setProjectName] = useState('My Sauna Project')
   const [zoom, setZoom]             = useState(1.1)
@@ -220,13 +223,43 @@ export default function App() {
 
 
 
+  const handleExportSVG = () => {
+    const svg = document.querySelector('.main-svg')
+    if (!svg) return
+    const s = new XMLSerializer().serializeToString(svg)
+    const blob = new Blob([s], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = `${projectName.replace(/\s+/g, '-')}.svg`; a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleExportDXF = () => {
+    const dxfText = generateSaunaDXF(saunaType, dims, placedComps)
+    const blob = new Blob([dxfText], { type: 'application/octet-stream' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = `${projectName.replace(/\s+/g, '-')}.dxf`; a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const handleExportIFC = () => {
-    const ifcData = generateSaunaIFC(saunaType, dims, placedComps)
-    const blob = new Blob([JSON.stringify(ifcData, null, 2)], { type: 'application/json' })
+    const text = generateSaunaIFC(saunaType, dims, placedComps)
+    const blob = new Blob([text], { type: 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url; a.download = `${projectName.replace(/\s+/g, '-')}.ifc`; a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleView3D = () => {
+    if (viewMode === '3d') {
+      setViewMode('2d')
+      return
+    }
+    const text = generateSaunaIFC(saunaType, dims, placedComps)
+    setIfcText(text)
+    setViewMode('3d')
   }
 
   if (screen === 'selection') {
@@ -244,7 +277,11 @@ export default function App() {
       <Navbar
         step={step}
         onStepChange={setStep}
+        onExportSVG={handleExportSVG}
+        onExportDXF={handleExportDXF}
         onExportIFC={handleExportIFC}
+        onView3D={handleView3D}
+        viewMode={viewMode}
       />
       <div className="workspace">
         <Sidebar
@@ -262,22 +299,30 @@ export default function App() {
           selectedComp={placedComps.find(c => c.id === selectedCompId)}
           onUpdateComp={handleUpdateComp}
         />
-        <Canvas
-          saunaType={saunaType}
-          dims={dims}
-          placedComps={placedComps}
-          onDrop={handleDrop}
-          onCompMove={handleCompMove}
-          onMoveEnd={handleMoveEnd}
-          onCompSelect={setSelectedCompId}
-          selectedCompId={selectedCompId}
-          zoom={zoom}
-          pan={pan}
-          onZoomChange={setZoom}
-          onPanChange={setPan}
-          isMoving={isMoving}
-          setIsMoving={setIsMoving}
-        />
+        {viewMode === '2d' ? (
+          <Canvas
+            saunaType={saunaType}
+            dims={dims}
+            placedComps={placedComps}
+            onDrop={handleDrop}
+            onCompMove={handleCompMove}
+            onMoveEnd={handleMoveEnd}
+            onCompSelect={setSelectedCompId}
+            selectedCompId={selectedCompId}
+            zoom={zoom}
+            pan={pan}
+            onZoomChange={setZoom}
+            onPanChange={setPan}
+            isMoving={isMoving}
+            setIsMoving={setIsMoving}
+          />
+        ) : (
+          <div className="canvas-area" style={{ flex: 1, position: 'relative' }}>
+            <div style={{ position: 'absolute', inset: 0 }}>
+              <IFCViewer ifcData={ifcText} />
+            </div>
+          </div>
+        )}
       </div>
       <StatusBar
         saunaType={saunaType}

@@ -2,14 +2,14 @@ export default function SelectionScreen({ selected, onSelect, onLaunch }) {
   return (
     <div className="sel-screen">
       <div className="sel-header">
-        <div className="sel-logo">
+        {/* <div className="sel-logo">
           <svg viewBox="0 0 36 36" fill="none">
             <rect width="36" height="36" rx="8" fill="#F26419" />
             <path d="M8 26L18 10L28 26Z" stroke="white" strokeWidth="2" fill="none" strokeLinejoin="round" />
             <circle cx="18" cy="18" r="4" fill="white" opacity="0.9" />
           </svg>
           <span className="sel-logo-text">Ikarus <b>CAD</b></span>
-        </div>
+        </div> */}
         <h1>Choose Your Sauna Style</h1>
         <p>Select a template to begin designing your custom sauna</p>
       </div>

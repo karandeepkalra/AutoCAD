@@ -110,6 +110,8 @@
 }
 .nav-export:hover { background: var(--orange-light); }
 .nav-export svg { width: 14px; height: 14px; }
+.nav-3d-active { background: #1A1F2E; box-shadow: 0 2px 8px rgba(26,31,46,0.3); }
+.nav-3d-active:hover { background: #2A3040; }
 
 /* ── Stepper ── */
 .nav-stepper {
