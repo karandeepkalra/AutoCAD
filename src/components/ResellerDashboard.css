@@ -1,0 +1,480 @@
+/* Reseller Dashboard - Using App.css design system */
+:root {
+  --rd-orange: #DC7A4A;
+  --rd-orange-light: #E8885A;
+  --rd-orange-pale: #F5E8E0;
+}
+
+.reseller-dashboard-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--bg);
+}
+
+/* Header */
+.rd-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  z-index: 10;
+}
+
+.rd-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--rd-orange);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  font-size: 0.95rem;
+}
+
+.rd-back-btn:hover {
+  color: var(--rd-orange-light);
+}
+
+/* Main Container */
+.rd-content {
+  padding: 1.25rem;
+}
+
+.rd-content-max {
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.rd-page-header {
+  margin-bottom: 1.5rem;
+}
+
+.rd-page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.rd-page-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+
+/* Reseller Info Card */
+.rd-info-card {
+  background-color: var(--rd-orange);
+  border-radius: var(--r-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.rd-info-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rd-info-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.rd-info-avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+}
+
+.rd-info-text h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.rd-info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.rd-info-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.rd-info-detail-icon {
+  font-size: 1rem;
+}
+
+.rd-info-detail-small {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.rd-info-btn {
+  background-color: white;
+  color: var(--rd-orange);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--r-sm);
+  border: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rd-info-btn:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Sales Reps Section */
+.rd-sales-section {
+  background-color: var(--panel);
+  border-radius: var(--r-sm);
+  padding: 1.5rem;
+}
+
+.rd-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.rd-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rd-section-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.rd-section-title svg {
+  color: var(--rd-orange);
+  width: 22px;
+  height: 22px;
+}
+
+/* Time Range Buttons */
+.rd-time-buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.rd-time-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--text-2);
+  transition: all 0.15s ease;
+}
+
+.rd-time-btn:hover {
+  color: var(--text);
+  border-color: var(--rd-orange);
+}
+
+.rd-time-btn.rd-time-active {
+  background-color: var(--rd-orange);
+  color: white;
+  border-color: var(--rd-orange);
+}
+
+/* Sales Reps Grid */
+.rd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.rd-rep-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 1.25rem;
+  background-color: var(--panel);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.rd-rep-card:hover {
+  border-color: var(--rd-orange);
+}
+
+/* Rep Header */
+.rd-rep-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.rd-rep-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+
+.rd-rep-avatar.platinum {
+  background-color: #3b82f6;
+}
+
+.rd-rep-avatar.gold {
+  background-color: var(--rd-orange);
+}
+
+.rd-rep-avatar.silver {
+  background-color: #9ca3af;
+}
+
+.rd-rep-info {
+  flex: 1;
+}
+
+.rd-rep-name {
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.rd-rep-tier {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  margin-top: 0.2rem;
+}
+
+.rd-rep-tier.platinum {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.rd-rep-tier.gold {
+  background-color: var(--rd-orange-pale);
+  color: var(--rd-orange);
+}
+
+.rd-rep-tier.silver {
+  background-color: var(--bg);
+  color: var(--text-2);
+}
+
+/* Rep Stats */
+.rd-rep-stats {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rd-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rd-stat-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rd-stat-label-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.rd-stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.rd-stat-value.converted {
+  color: var(--rd-orange);
+}
+
+/* Conversion Rate Badge */
+.rd-conversion-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.rd-conversion-badge.high {
+  background-color: #10b981;
+}
+
+.rd-conversion-badge.medium {
+  background-color: var(--rd-orange);
+}
+
+.rd-conversion-badge.low {
+  background-color: #ef4444;
+}
+
+/* Progress Bar */
+.rd-progress-bar-container {
+  width: 100%;
+  background-color: var(--bg);
+  border-radius: 2px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.rd-progress-bar {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.rd-progress-bar.high {
+  background-color: #10b981;
+}
+
+.rd-progress-bar.medium {
+  background-color: var(--rd-orange);
+}
+
+.rd-progress-bar.low {
+  background-color: #ef4444;
+}
+
+/* Rep Action Button */
+.rd-rep-action-btn {
+  width: 100%;
+  background-color: var(--rd-orange);
+  color: white;
+  padding: 0.45rem;
+  border-radius: var(--r-sm);
+  border: none;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.rd-rep-action-btn:hover {
+  background-color: var(--rd-orange-light);
+}
+
+/* Summary Stats Footer */
+.rd-summary {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+
+.rd-summary-card {
+  border-radius: var(--r-sm);
+  padding: 0.9rem;
+  background-color: var(--bg);
+}
+
+.rd-summary-label {
+  font-size: 0.75rem;
+  color: var(--text-2);
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+
+.rd-summary-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.rd-summary-value.blue {
+  color: #3b82f6;
+}
+
+.rd-summary-value.amber {
+  color: var(--rd-orange);
+}
+
+.rd-summary-value.green {
+  color: #10b981;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rd-info-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .rd-info-left {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rd-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rd-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rd-page-title {
+    font-size: 1.5rem;
+  }
+}

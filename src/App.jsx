@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { generateSaunaIFC } from './exportIfc'
 import { uid } from './constants.jsx'
 import { getDefaultComps } from './utils/getDefaultComps'
@@ -7,12 +8,12 @@ import SelectionScreen from './components/SelectionScreen'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Canvas from './components/Canvas'
-
 import StatusBar from './components/StatusBar'
 import './App.css'
 
-export default function App() {
-  const [screen, setScreen]         = useState('selection')
+export default function App({ initialScreen = 'selection' }) {
+  const navigate = useNavigate()
+  const [screen, setScreen]         = useState(initialScreen)
   const [saunaType, setSaunaType]   = useState('barrel')
   const [step, setStep]             = useState(0)
 
@@ -261,6 +262,7 @@ export default function App() {
           onUpdateDims={handleUpdateDims}
           selectedComp={placedComps.find(c => c.id === selectedCompId)}
           onUpdateComp={handleUpdateComp}
+          onShowDashboard={() => navigate('/dashboard')}
         />
         <Canvas
           saunaType={saunaType}

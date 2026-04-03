@@ -13,7 +13,7 @@ const STEP_HINTS = {
   4: 'Your design is ready. Click BIM (IFC) to export.',
 }
 
-export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step, dims, onUpdateDims, selectedComp, onUpdateComp }) {
+export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step, dims, onUpdateDims, selectedComp, onUpdateComp, onShowDashboard }) {
   const visibleTypes = STEP_TYPES[step] ?? []
   const visibleComps = COMPONENTS.filter(c => visibleTypes.includes(c.type))
 
@@ -199,6 +199,44 @@ export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step
             ))}
           </>
         ) : null}
+      </div>
+
+      {/* Senior Dev Mode Button */}
+      <div className="sb-section" style={{ borderTop: '1px solid var(--border)', padding: '12px', marginTop: 'auto' }}>
+        <button
+          onClick={onShowDashboard}
+          style={{
+            width: '100%',
+            padding: '12px 16px',
+            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}
+          onMouseEnter={e => {
+            e.target.style.transform = 'translateY(-2px)'
+            e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)'
+          }}
+          onMouseLeave={e => {
+            e.target.style.transform = 'translateY(0)'
+            e.target.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.3)'
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>
+          </svg>
+        Reseller Mode
+        </button>
       </div>
 
     </aside>
