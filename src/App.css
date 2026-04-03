@@ -271,6 +271,87 @@
 .prop-unit { font-size: 11px; color: var(--text-2); min-width: 22px; }
 
 /* ══════════════════════════════════════
+   SLOT PLACEMENT SYSTEM
+══════════════════════════════════════ */
+
+/* Component row wrapper */
+.comp-entry { display: flex; flex-direction: column; }
+
+/* Component item states */
+.comp-item { cursor: pointer; }
+.comp-item.comp-pending {
+  background: var(--orange-pale);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.comp-item.comp-maxed {
+  opacity: 0.42;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Count / state badges */
+.comp-badge.badge-pending {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+}
+.comp-badge.badge-maxed {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+/* slot-inline-header used only in fallback cases — kept minimal */
+.slot-inline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px 6px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Canvas placement-mode cursor */
+.canvas-wrapper.placement-mode { cursor: crosshair; }
+
+/* Placement banner (floats at bottom of canvas) */
+.placement-banner {
+  position: absolute;
+  bottom: 62px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(120, 40, 0, 0.88);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(242,100,25,0.35);
+  white-space: nowrap;
+  pointer-events: auto;
+  z-index: 6;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(242,100,25,0.4);
+}
+.placement-banner strong { font-weight: 700; text-transform: uppercase; color: var(--orange-light); }
+.placement-banner-cancel {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.placement-banner-cancel:hover { background: rgba(255,255,255,0.28); }
+
+/* ══════════════════════════════════════
    STATUS BAR
 ══════════════════════════════════════ */
 .status-bar {
