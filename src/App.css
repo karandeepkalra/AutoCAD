@@ -14,9 +14,8 @@
   --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
   --r: 10px;
   --r-sm: 6px;
-  --nav-h: 52px;
-  --sidebar-w: 220px;
-  --props-w: 260px;
+  --nav-h: 68px;
+  --sidebar-w: 420px;
 }
 
 /* ══════════════════════════════════════
@@ -76,6 +75,7 @@
   height: var(--nav-h); background: var(--white); border-bottom: 1px solid var(--border);
   display: flex; align-items: center; padding: 0 16px; gap: 10px;
   box-shadow: var(--shadow-sm); z-index: 10; flex-shrink: 0;
+  position: relative;
 }
 .nav-logo { display: flex; align-items: center; gap: 8px; margin-right: 6px; }
 .nav-logo svg { width: 28px; height: 28px; }
@@ -110,6 +110,72 @@
 }
 .nav-export:hover { background: var(--orange-light); }
 .nav-export svg { width: 14px; height: 14px; }
+
+/* ── Stepper ── */
+.nav-stepper {
+  display: flex; align-items: center;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.ns-step-wrap { display: flex; align-items: center; }
+.ns-line {
+  width: 36px; height: 2px;
+  background: var(--border); border-radius: 1px; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.ns-line-done { background: var(--orange); }
+.ns-step {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: none; cursor: pointer; padding: 4px 6px;
+  border-radius: 8px; transition: background 0.15s;
+  text-align: left;
+}
+.ns-step:hover:not(:disabled) { background: var(--bg); }
+.ns-step:disabled { cursor: default; }
+.ns-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 2px solid var(--border);
+  background: var(--white);
+  color: var(--text-2);
+  transition: all 0.2s;
+}
+.ns-active .ns-circle {
+  border-color: var(--orange); background: var(--orange); color: #fff;
+}
+.ns-done .ns-circle {
+  border-color: var(--orange); background: var(--orange-pale); color: var(--orange);
+}
+.ns-locked .ns-circle {
+  border-color: var(--border); background: var(--bg); color: #d1d5db;
+}
+.ns-text { display: flex; flex-direction: column; line-height: 1.2; }
+.ns-label {
+  font-size: 12px; font-weight: 600; color: var(--text-2);
+  white-space: nowrap; transition: color 0.2s;
+}
+.ns-sub {
+  font-size: 10px; color: #9CA3AF; white-space: nowrap;
+}
+.ns-active .ns-label { color: var(--orange); }
+.ns-done .ns-label   { color: var(--text-2); }
+.ns-locked .ns-label { color: #d1d5db; }
+.ns-locked .ns-sub   { color: #e5e7eb; }
+
+/* step nav buttons */
+.nav-step-nav { display: flex; align-items: center; gap: 6px; }
+.nav-next {
+  background: var(--orange) !important; color: #fff !important;
+  border-color: var(--orange) !important;
+}
+.nav-next:hover { background: var(--orange-light) !important; border-color: var(--orange-light) !important; }
+
+/* sidebar hint for non-component steps */
+.sb-step-hint {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 16px; text-align: center;
+}
+.sb-hint-icon { opacity: 0.7; }
+.sb-hint-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
 
 /* ══════════════════════════════════════
    WORKSPACE
@@ -158,8 +224,11 @@
 ══════════════════════════════════════ */
 .canvas-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 .canvas-toolbar {
-  height: 40px; background: var(--white); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 12px; gap: 6px; flex-shrink: 0;
+  position: absolute; bottom: 16px; right: 16px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); box-shadow: var(--shadow-md);
+  display: flex; align-items: center; padding: 6px 10px; gap: 6px;
+  z-index: 5;
 }
 .tab-group { display: flex; gap: 4px; }
 .tab-btn {
@@ -189,52 +258,17 @@
 .canvas-wrapper.pan-cursor:active { cursor: grabbing; }
 .main-svg { display: block; width: 100%; height: 100%; }
 
-/* ══════════════════════════════════════
-   PROPERTIES PANEL
-══════════════════════════════════════ */
-.props-panel {
-  width: var(--props-w); background: var(--panel); border-left: 1px solid var(--border);
-  overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column;
-}
-.pp-header { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); }
-.pp-title { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 7px; }
-.pp-title svg { width: 15px; height: 15px; color: var(--orange); }
-.pp-section { padding: 12px 14px; border-bottom: 1px solid var(--border); }
-.pp-section-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase;
-  color: var(--orange); margin-bottom: 10px;
-}
+/* ── Inline props (now in sidebar) ── */
 .prop-row { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
 .prop-row:last-child { margin-bottom: 0; }
 .prop-label { font-size: 12px; color: var(--text-2); flex: 1; font-weight: 500; }
 .prop-input {
-  width: 88px; padding: 5px 8px; border-radius: var(--r-sm); border: 1px solid var(--border);
+  width: 120px; padding: 5px 8px; border-radius: var(--r-sm); border: 1px solid var(--border);
   font-size: 12px; font-weight: 600; color: var(--text); background: var(--white);
   text-align: right; outline: none; transition: border-color 0.15s;
 }
 .prop-input:focus { border-color: var(--orange); }
 .prop-unit { font-size: 11px; color: var(--text-2); min-width: 22px; }
-.prop-select {
-  flex: 1; padding: 5px 8px; border-radius: var(--r-sm); border: 1px solid var(--border);
-  font-size: 12px; color: var(--text); background: var(--white); outline: none; cursor: pointer;
-  transition: border-color 0.15s;
-}
-.prop-select:focus { border-color: var(--orange); }
-.color-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-.color-swatch {
-  width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent; transition: transform 0.15s;
-}
-.color-swatch:hover { transform: scale(1.15); }
-.color-swatch.cs-active { border-color: var(--orange); box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--orange); }
-.pp-footer { padding: 12px 14px; margin-top: auto; }
-.apply-btn {
-  width: 100%; background: var(--orange); color: #fff; border: none; padding: 10px;
-  border-radius: var(--r-sm); font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: background 0.2s; box-shadow: 0 3px 10px rgba(242,100,25,0.3);
-}
-.apply-btn:hover { background: var(--orange-light); }
-.apply-btn.applied { background: #22C55E; box-shadow: 0 3px 10px rgba(34,197,94,0.3); }
 
 /* ══════════════════════════════════════
    STATUS BAR

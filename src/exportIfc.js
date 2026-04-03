@@ -146,8 +146,12 @@ export function generateSaunaIFC(saunaType, dims, placedComps) {
       case 'bench':  ifcClass = "IfcFurniture";   revitCat = "Furniture"; break;
       case 'door':   ifcClass = "IfcDoor";        revitCat = "Doors"; break;
       case 'window': ifcClass = "IfcWindow";      revitCat = "Windows"; break;
-      case 'light':  ifcClass = "IfcLightFixture"; revitCat = "Lighting Fixtures"; break;
-      case 'vent':   ifcClass = "IfcFlowTerminal"; revitCat = "Mechanical Equipment"; break;
+      case 'light':        ifcClass = "IfcLightFixture";      revitCat = "Lighting Fixtures"; break;
+      case 'vent':         ifcClass = "IfcFlowTerminal";      revitCat = "Mechanical Equipment"; break;
+      case 'speaker':      ifcClass = "IfcAudioVisualAppliance"; revitCat = "Communication Devices"; break;
+      case 'controlunit':  ifcClass = "IfcController";        revitCat = "Electrical Fixtures"; break;
+      case 'thermometer':  ifcClass = "IfcSensor";            revitCat = "Specialty Equipment"; break;
+      case 'timer':        ifcClass = "IfcActuator";          revitCat = "Electrical Fixtures"; break;
     }
 
     elements.push({

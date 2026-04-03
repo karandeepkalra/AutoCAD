@@ -131,32 +131,6 @@ export default function Canvas({ saunaType, dims, placedComps, onDrop,
 
   return (
     <div className="canvas-area">
-      {/* Toolbar */}
-      <div className="canvas-toolbar">
-        <div className="toolbar-spacer" />
-        {/* Tool buttons */}
-        {[
-          { id: 'select', title: 'Select', icon: <path d="M5 3l14 9-7 1-4 7-3-17z" /> },
-          { id: 'pan',    title: 'Pan',    icon: <path d="M5 9V5a2 2 0 0 1 4 0v4m4-3a2 2 0 0 1 4 0v5m-4-3a2 2 0 0 1 4 0v6a8 8 0 0 1-16 0v-5a2 2 0 0 1 4 0" /> },
-        ].map(t => (
-          <button key={t.id} className={`tool-btn ${activeTool === t.id ? 'tool-active' : ''}`}
-            title={t.title} onClick={() => setActiveTool(t.id)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{t.icon}</svg>
-          </button>
-        ))}
-        <div className="toolbar-sep" />
-        <button className="tool-btn" title="Zoom In"  onClick={() => onZoomChange(z => Math.min(5, z * 1.25))}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-        </button>
-        <button className="tool-btn" title="Zoom Out" onClick={() => onZoomChange(z => Math.max(0.1, z / 1.25))}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-        </button>
-        <button className="tool-btn" title="Fit View" onClick={fitView}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-        </button>
-        <span className="zoom-display">{Math.round(zoom * 100)}%</span>
-      </div>
-
       {/* SVG Canvas */}
       <div
         ref={wrapperRef}
@@ -289,6 +263,32 @@ export default function Canvas({ saunaType, dims, placedComps, onDrop,
             })}
           </g>
         </svg>
+
+        {/* Floating toolbar — bottom right */}
+        <div className="canvas-toolbar" onClick={e => e.stopPropagation()}>
+          {[
+            { id: 'select', title: 'Select', icon: <path d="M5 3l14 9-7 1-4 7-3-17z" /> },
+            { id: 'pan',    title: 'Pan',    icon: <path d="M5 9V5a2 2 0 0 1 4 0v4m4-3a2 2 0 0 1 4 0v5m-4-3a2 2 0 0 1 4 0v6a8 8 0 0 1-16 0v-5a2 2 0 0 1 4 0" /> },
+          ].map(t => (
+            <button key={t.id} className={`tool-btn ${activeTool === t.id ? 'tool-active' : ''}`}
+              title={t.title} onClick={() => setActiveTool(t.id)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{t.icon}</svg>
+            </button>
+          ))}
+          <div className="toolbar-sep" />
+          <button className="tool-btn" title="Zoom In" onClick={() => onZoomChange(z => Math.min(5, z * 1.25))}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </button>
+          <button className="tool-btn" title="Zoom Out" onClick={() => onZoomChange(z => Math.max(0.1, z / 1.25))}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </button>
+          <button className="tool-btn" title="Fit View" onClick={fitView}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
+          <div className="toolbar-sep" />
+          <span className="zoom-display">{Math.round(zoom * 100)}%</span>
+        </div>
+
       </div>
     </div>
   )

@@ -7,13 +7,14 @@ import SelectionScreen from './components/SelectionScreen'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Canvas from './components/Canvas'
-import PropsPanel from './components/PropsPanel'
+
 import StatusBar from './components/StatusBar'
 import './App.css'
 
 export default function App() {
   const [screen, setScreen]         = useState('selection')
   const [saunaType, setSaunaType]   = useState('barrel')
+  const [step, setStep]             = useState(0)
 
   const [projectName, setProjectName] = useState('My Sauna Project')
   const [zoom, setZoom]             = useState(1.1)
@@ -218,16 +219,6 @@ export default function App() {
   }
 
 
-  const handleExport = () => {
-    const svg = document.querySelector('.main-svg')
-    if (!svg) return
-    const s = new XMLSerializer().serializeToString(svg)
-    const blob = new Blob([s], { type: 'image/svg+xml;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url; a.download = `${projectName.replace(/\s+/g, '-')}.svg`; a.click()
-    URL.revokeObjectURL(url)
-  }
 
   const handleExportIFC = () => {
     const ifcData = generateSaunaIFC(saunaType, dims, placedComps)
@@ -251,18 +242,14 @@ export default function App() {
   return (
     <div className="app" ref={appRef} onClick={() => setSelectedCompId(null)}>
       <Navbar
-        onExport={handleExport}
+        step={step}
+        onStepChange={setStep}
         onExportIFC={handleExportIFC}
-        projectName={projectName}
-        setProjectName={setProjectName}
-        onUndo={undo}
-        onRedo={redo}
-        canUndo={historyPtr > 0}
-        canRedo={historyPtr < history.length - 1}
       />
       <div className="workspace">
         <Sidebar
           saunaType={saunaType}
+          step={step}
           onTypeSwitch={t => {
             const nextComps = getDefaultComps(t, dims)
             setSaunaType(t)
@@ -270,6 +257,10 @@ export default function App() {
             saveToHistory(t, null, nextComps)
           }}
           onCompDragStart={handleCompDragStart}
+          dims={dims}
+          onUpdateDims={handleUpdateDims}
+          selectedComp={placedComps.find(c => c.id === selectedCompId)}
+          onUpdateComp={handleUpdateComp}
         />
         <Canvas
           saunaType={saunaType}
@@ -286,13 +277,6 @@ export default function App() {
           onPanChange={setPan}
           isMoving={isMoving}
           setIsMoving={setIsMoving}
-        />
-
-        <PropsPanel
-          dims={dims}
-          onUpdateDims={handleUpdateDims}
-          selectedComp={placedComps.find(c => c.id === selectedCompId)}
-          onUpdateComp={handleUpdateComp}
         />
       </div>
       <StatusBar
