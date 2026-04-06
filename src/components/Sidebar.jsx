@@ -1,4 +1,5 @@
 import { COMPONENTS, COMP_SVG, DOOR_OPTIONS, WINDOW_OPTIONS, BENCH_OPTIONS, SPEAKER_OPTIONS, CONTROLUNIT_OPTIONS, THERMOMETER_OPTIONS, TIMER_OPTIONS } from '../constants.jsx'
+import { getMaxCount } from '../utils/positionEngine'
 
 const STEP_TYPES = {
   0: [],
@@ -13,9 +14,15 @@ const STEP_HINTS = {
   4: 'Your design is ready. Click BIM (IFC) to export.',
 }
 
-export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step, dims, onUpdateDims, selectedComp, onUpdateComp }) {
+export default function Sidebar({
+  saunaType, onTypeSwitch, step, dims, onUpdateDims,
+  selectedComp, onUpdateComp,
+  placedComps, pendingPlacementType, validSlots, hoveredSlotIdx,
+  onCompClick, onSlotHover, onSlotPlace, onCancelPlacement,
+}) {
   const visibleTypes = STEP_TYPES[step] ?? []
   const visibleComps = COMPONENTS.filter(c => visibleTypes.includes(c.type))
+  const isInPlacementMode = !!pendingPlacementType
 
   const updateDim = (key, val, commit = false) => {
     const n = parseFloat(val)
@@ -25,7 +32,7 @@ export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step
   return (
     <aside className="sidebar" onClick={e => e.stopPropagation()}>
 
-      {/* Sauna type switcher */}
+      {/* ── Sauna type switcher ── */}
       <div className="sb-section">
         <div className="sb-label">Sauna Type</div>
         <div className="type-btns">
@@ -46,27 +53,158 @@ export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step
         </div>
       </div>
 
-      {/* Component library (steps 1-3) */}
+      {/* ── Component library (steps 1–3) ── */}
       {visibleComps.length > 0 && (
-        <div className="sb-section" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+        <div style={{
+          flex: isInPlacementMode ? '1 1 0' : '0 0 auto',
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '12px 12px 0',
+          borderBottom: '1px solid var(--border)',
+          overflow: 'hidden',
+        }}>
+          {/* Fixed header — never scrolls */}
           <div className="sb-label">Components</div>
-          <div style={{ fontSize: 10, color: '#9CA3AF', marginBottom: 8, fontStyle: 'italic' }}>Drag or click to place</div>
-          <div className="comp-scroll" style={{ maxHeight: 160 }}>
-            {visibleComps.map(c => (
-              <div
-                key={c.type}
-                className="comp-item"
-                draggable
-                onDragStart={e => onCompDragStart(e, c.type)}
-                onClick={() => onCompDragStart({ dataTransfer: { setData:()=>{} }, preventDefault:()=>{} }, c.type, true)}
-              >
-                <svg viewBox="-16 -16 32 32" width="22" height="22" fill="none" overflow="visible">
-                  {COMP_SVG[c.type]}
-                </svg>
-                <span>{c.label}</span>
-                <span className="comp-badge">Add</span>
-              </div>
-            ))}
+          <div style={{ fontSize: 10, color: '#9CA3AF', marginBottom: 8, fontStyle: 'italic', flexShrink: 0 }}>
+            Click a component to see valid placement options
+          </div>
+
+          {/* Scrollable list (non-placement mode) or flex-fill column (placement mode) */}
+          <div style={{
+            flex: isInPlacementMode ? '1 1 0' : '0 0 auto',
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: isInPlacementMode ? 'hidden' : 'hidden',
+            maxHeight: isInPlacementMode ? 'none' : 220,
+            overflowY: isInPlacementMode ? 'hidden' : 'auto',
+          }}>
+            {visibleComps.map(c => {
+              const maxCount  = getMaxCount(c.type)
+              const placed    = placedComps.filter(p => p.type === c.type).length
+              const isMaxed   = placed >= maxCount
+              const isPending = pendingPlacementType === c.type
+
+              return (
+                <div key={c.type} style={isPending
+                  ? { flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column' }
+                  : { flexShrink: 0 }
+                }>
+                  {/* ── Component row ── */}
+                  <div
+                    className={`comp-item ${isPending ? 'comp-pending' : ''} ${isMaxed ? 'comp-maxed' : ''}`}
+                    style={{ flexShrink: 0 }}
+                    draggable={!isMaxed}
+                    onDragStart={e => {
+                      e.dataTransfer.setData('text/plain', c.type)
+                      e.dataTransfer.effectAllowed = 'copy'
+                      onCompClick(c.type)
+                    }}
+                    onClick={() => !isMaxed && onCompClick(c.type)}
+                    title={isMaxed ? `Max ${maxCount} allowed` : `Click to place · drag to canvas`}
+                  >
+                    <svg viewBox="-16 -16 32 32" width="22" height="22" fill="none" overflow="visible">
+                      {COMP_SVG[c.type]}
+                    </svg>
+                    <span>{c.label}</span>
+                    <span className={`comp-badge ${isPending ? 'badge-pending' : isMaxed ? 'badge-maxed' : ''}`}>
+                      {isMaxed
+                        ? `${placed}/${maxCount} max`
+                        : isPending
+                          ? 'Selecting…'
+                          : `${placed}/${maxCount}`}
+                    </span>
+                  </div>
+
+                  {/* ── Inline position cards ── */}
+                  {isPending && (
+                    <div style={{
+                      flex: '1 1 0', minHeight: 0,
+                      display: 'flex', flexDirection: 'column',
+                      background: 'var(--bg)',
+                      borderTop: '1px solid var(--border)',
+                      overflow: 'hidden',
+                    }}>
+                      {/* Header */}
+                      <div style={{
+                        flexShrink: 0, display: 'flex', alignItems: 'center',
+                        justifyContent: 'space-between', padding: '8px 12px 7px',
+                        background: '#fff', borderBottom: '1px solid var(--border)',
+                      }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-2)', letterSpacing: '0.7px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          Placement Slot
+                          {validSlots.length > 0 && (
+                            <span style={{ background: 'var(--orange)', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 7px', borderRadius: 10 }}>
+                              {validSlots.length}
+                            </span>
+                          )}
+                        </span>
+                        <button
+                          onClick={onCancelPlacement}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: 'var(--text-2)', lineHeight: 1, padding: '0 2px', opacity: 0.45 }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                          onMouseLeave={e => e.currentTarget.style.opacity = 0.45}
+                        >✕</button>
+                      </div>
+
+                      {validSlots.length === 0 ? (
+                        <p style={{ padding: '14px 12px', fontSize: 11, color: 'var(--text-2)', fontStyle: 'italic', margin: 0 }}>
+                          No valid positions available.
+                        </p>
+                      ) : (
+                        /* 2-col card grid — fills all remaining height, scrolls */
+                        <div style={{
+                          flex: '1 1 0', minHeight: 0,
+                          overflowY: 'auto',
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
+                          gap: 8,
+                          padding: '10px 10px 14px',
+                          alignContent: 'start',
+                        }}>
+                          {validSlots.map((slot, idx) => {
+                            const isHovered = hoveredSlotIdx === idx
+                            // Split "Bottom Wall – Far Left" → ["Bottom Wall", "Far Left"]
+                            const parts = slot.label.split(' – ')
+                            const primary = parts[0] || slot.label
+                            const secondary = parts[1] || ''
+                            return (
+                              <div
+                                key={idx}
+                                onMouseEnter={() => onSlotHover(idx)}
+                                onMouseLeave={() => onSlotHover(null)}
+                                onClick={() => onSlotPlace(slot)}
+                                style={{
+                                  display: 'flex', flexDirection: 'column', gap: 2,
+                                  padding: '10px 12px',
+                                  background: isHovered ? 'var(--orange-pale)' : '#fff',
+                                  border: `1.5px solid ${isHovered ? 'var(--orange)' : 'var(--border)'}`,
+                                  borderRadius: 8,
+                                  cursor: 'pointer',
+                                  userSelect: 'none',
+                                  transition: 'border-color 0.13s, background 0.13s',
+                                  boxShadow: isHovered ? '0 2px 8px rgba(242,100,25,0.12)' : '0 1px 3px rgba(0,0,0,0.05)',
+                                }}
+                              >
+                                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>
+                                  {primary}
+                                </span>
+                                {secondary && (
+                                  <span style={{ fontSize: 11, fontWeight: 400, color: isHovered ? 'var(--orange)' : 'var(--text-2)', lineHeight: 1.2 }}>
+                                    {secondary}
+                                  </span>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -78,8 +216,8 @@ export default function Sidebar({ saunaType, onTypeSwitch, onCompDragStart, step
         </div>
       )}
 
-      {/* ── Properties ── */}
-      <div className="sb-section" style={{ flex: 1, overflowY: 'auto', borderBottom: 'none' }}>
+      {/* ── Properties panel ── */}
+      <div className="sb-section" style={{ flex: isInPlacementMode ? 'none' : 1, overflowY: 'auto', borderBottom: 'none' }}>
         {selectedComp ? (
           <>
             <div className="sb-label">
